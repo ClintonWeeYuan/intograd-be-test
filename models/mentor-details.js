@@ -60,7 +60,7 @@ async function findMentor(query, callback = undefined, res = undefined) {
         mentorDetails.find(query, callback);
         return;
     }
-    return await this.find(query).exec();
+    return await mentorDetails.find(query).exec();
 }
 
 module.exports = { Mentor: mentorDetails, findMentor: findMentor };

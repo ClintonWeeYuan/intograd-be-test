@@ -10,25 +10,30 @@ router.get('/', function(req, res, next) {
             menteeCount : { $gt : 0 }
         }
     }
-    let callback = function(err, mentor) {
+    let callback = function(err, mentee) {
         if (err) return handleError(err, res);
-        handleSuccess(mentor, res);
+        handleSuccess(mentee, res);
     }
     findMentee(query, callback);
 });
 
+router.get("/:id", async function(req, res, next) {
+    let mentee = await Mentee.findById(req.params.id).exec();
+    handleSuccess(mentee, res);
+})
+
 router.put('/:id', function(req, res, next) {
-    Mentee.findOneAndReplace({_id: req.params.id}, function(err, mentor){
+    Mentee.findOneAndUpdate({_id: req.params.id}, req.body, {new: true}, function(err, mentee){
         if (err) return handleError(err, res);
-        handleSuccess(mentor, res);
+        handleSuccess(mentee, res);
     });
 })
 
 /* create mentor. */
 router.post('/create', function(req, res, next) {
-    Mentee.create(req.body, function (err,mentor) {
+    Mentee.create(req.body, function (err,mentee) {
         if (err) return handleError(err, res);
-        handleSuccess(mentor, res);
+        handleSuccess(mentee, res);
     });
 });
 
@@ -37,6 +42,30 @@ router.delete('/:id', function (req, res) {
         if (err) return handleError(err, res);
         handleSuccess(null, res);
     })
+})
+
+router.post('/debug', function(req, res) {
+    let applicant = {
+        firstName           	: "Aaa",
+        lastName            	: "Zzz",
+        currentCountry      	: "CountryA",
+        postgradUni         	: "PgUA",
+        postgradField       	: "PgfieldA", // broad field categories
+        postgradType        	: "PhD", // Masters/PhD
+        postgradProgramTitle    : "PgProgA",
+        undergradCountry    	: "UgCountryA",
+        undergradField      	: "UgfieldA",
+        undergradUni        	: "UgUA",
+        undergradProgramTitle   : "UgProgA",
+        email                   : "noreply@intograd.org",
+        linkedIn                : "linkedin_link",
+        hearAboutUs             : ["first source", "2nd source"]
+    };
+    
+    Mentee.create(applicant, function (err,mentee) {
+        if (err) return handleError(err, res);
+        handleSuccess(mentee, res);
+    });
 })
 
 module.exports = router;

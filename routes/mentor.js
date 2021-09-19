@@ -19,7 +19,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.put('/:id', function(req, res, next) {
-    Mentor.findOneAndReplace({_id: req.params.id}, function(err, mentor){
+    Mentor.findOneAndUpdate({_id: req.params.id}, req.body, {new: true}, function(err, mentor){
         if (err) return handleError(err, res);
         handleSuccess(mentor, res);
     });
@@ -38,6 +38,38 @@ router.delete('/:id', function (req, res) {
         if (err) return handleError(err, res);
         handleSuccess(null, res);
     })
+})
+
+router.post('/debug', function(req, res) {
+    let advisor = {
+        firstName           	: "AdvisorZzz",
+        lastName            	: "Yyy",
+        currentCountry      	: "CountryZ",
+        engagements         	: ["engagements1", "engagements2"],
+        menteeCount         	: 2,
+        postgradDegNum      	: 2,
+        postgradUni         	: "PgUZ",
+        postgradField       	: "PgfieldZ", // broad field categories
+        postgradType        	: "PhD", // Masters/PhD
+        postgradProgramTitle    : "PgProgZ",
+        postgradUniPrev        	: "PgUZ",
+        postgradFieldPrev       : "PgfieldZ", // broad field categories
+        postgradTypePrev        : "Master's", // Masters/PhD
+        postgradProgramTitlePrev: "PgProgZ",
+        undergradCountry    	: "UgCountryZ",
+        undergradField      	: "UgfieldZ",
+        undergradUni        	: "UgUZ",
+        undergradProgramTitle   : "UgProgZ",
+        email                   : "noreply@intograd.org",
+        linkedIn                : "linkedin_link",
+        hearAboutUs             : ["first source", "2nd source"]
+        ,extraInfo               : "some extra info"
+    };
+
+    Mentor.create(advisor, function (err,mentor) {
+        if (err) return handleError(err, res);
+        handleSuccess(mentor, res);
+    });
 })
 
 module.exports = router;

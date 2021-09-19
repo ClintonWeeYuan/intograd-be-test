@@ -33,7 +33,7 @@ async function findMentee(query, callback = undefined, res = undefined) {
         menteeDetails.find(query, callback);
         return;
     }
-    return await this.find(query).exec();
+    return await menteeDetails.find(query).exec();
 }
 
 module.exports = { Mentee: menteeDetails, findMentee: findMentee };
