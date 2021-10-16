@@ -23,6 +23,9 @@ router.get("/:id", async function(req, res, next) {
 })
 
 router.put('/:id', function(req, res, next) {
+    if (req.body.matchedAdvisor == ""){
+        req.body.matchedAdvisor = null;
+    }
     Mentee.findOneAndUpdate({_id: req.params.id}, req.body, {new: true}, function(err, mentee){
         if (err) return handleError(err, res);
         handleSuccess(mentee, res);

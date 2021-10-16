@@ -42,7 +42,7 @@ const MentorSchema = new mongoose.Schema({
         type: [String]
     }, //NOTE array of strings
     extraInfo               : String,
-    matchedApplicant        : {
+    matchedApplicants        : {
         type: [String]
     }, //array of {uuid of matched applicant, score of matching}
     createdAt               : { type : Date, default : Date.now },

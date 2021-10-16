@@ -3,6 +3,8 @@ var router = express.Router();
 var { Mentor, findMentor } = require('../models/mentor-details')
 var { Mentee, findMentee } = require('../models/mentee-details')
 const stringSimilarity = require("string-similarity");
+var { handleSuccess, handleError } = require('./apiRoutes');
+var Email = require('../models/email')
 
 router.post('/dry-run', async function(req, res, next) {
     let bestAdvisor;
@@ -48,6 +50,29 @@ router.post('/dry-run', async function(req, res, next) {
             Check logs for details.</p>`
         );
     }
+})
+
+router.post('/match-all', async function(req, res, next) {
+    let applicants = await findMentee({matchedAdvisor: null});
+    console.log(applicants);
+    applicants.forEach(async function(applicant) {
+        let availableAdvisors = await findMentor({menteeCount: {$gt: 0}});
+        if (availableAdvisors.length == 0) {
+            handleError("No available advisors", res, 500); 
+        }
+        let bestAdvisor = bestMatch(applicant, availableAdvisors);
+        bestAdvisor.advisor.matchedApplicants.push(applicant._id);
+        bestAdvisor.advisor.menteeCount = bestAdvisor.advisor.menteeCount - 1;
+        bestAdvisor.advisor.save();
+        applicant.matchedAdvisor = {
+            uuid: bestAdvisor.advisor._id, 
+            score: bestAdvisor.score
+        };
+        applicant.save();
+        Email.emailNotify(1, applicant, bestAdvisor.advisor);
+        Email.emailNotify(2, applicant, bestAdvisor.advisor);
+    });
+    handleSuccess(applicants, res);
 })
 
 //TODO: REWRITE THIS

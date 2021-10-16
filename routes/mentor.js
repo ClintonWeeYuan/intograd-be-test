@@ -18,7 +18,15 @@ router.get('/', function(req, res, next) {
     findMentor(query, callback);
 });
 
+router.get("/:id", async function(req, res, next) {
+    let mentor = await Mentor.findById(req.params.id).exec();
+    handleSuccess(mentor, res);
+})
+
 router.put('/:id', function(req, res, next) {
+    if (req.body.matchedApplicants == ""){
+        req.body.matchedApplicants = [];
+    }
     Mentor.findOneAndUpdate({_id: req.params.id}, req.body, {new: true}, function(err, mentor){
         if (err) return handleError(err, res);
         handleSuccess(mentor, res);
