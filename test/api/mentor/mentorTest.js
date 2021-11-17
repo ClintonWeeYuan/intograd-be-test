@@ -1,13 +1,17 @@
-let expect = require("chai").expect;
-let chai = require("chai");
-let chaiHttp = require("chai-http");
-let server = require("../app");
-let { Mentor, findMentor } = require("../models/mentor-details");
+const mochaTestSuite = require("../testSuite/testSuite");
+const mongoose = require("mongoose");
+const expect = require("chai").expect;
+const request = require("supertest");
+const chai = require("chai");
+const chaiHttp = require("chai-http");
+const server = require("../../../app");
+let { Mentor, findMentor } = require("../../../models/mentor-details");
 
 chai.use(chaiHttp);
 
-describe("Mentors", () => {
+mochaTestSuite("Mentors", () => {
   //Create a sample mentor for each test
+
   let sample_mentor = {
     firstName: "Jonathan",
     lastName: "Chow",
@@ -20,13 +24,6 @@ describe("Mentors", () => {
     postgradTypePrev: "Masters",
     email: "123@gmail.com",
   };
-
-  //Removes all data from database after each test
-  afterEach((done) => {
-    Mentor.remove({}, (err) => {
-      done();
-    });
-  });
 
   //Get All Mentors
   describe("GET mentors", () => {
