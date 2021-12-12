@@ -1,11 +1,11 @@
-const mochaTestSuite = require("../testSuite/testSuite");
+const mochaTestSuite = require("./testSuite");
 const mongoose = require("mongoose");
 const expect = require("chai").expect;
 const request = require("supertest");
 const chai = require("chai");
 const chaiHttp = require("chai-http");
-const server = require("../../../app");
-let { Mentor, findMentor } = require("../../../models/mentor-details");
+const server = require("../app");
+let { Mentor, findMentor } = require("../models/mentor-details");
 
 chai.use(chaiHttp);
 

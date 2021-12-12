@@ -29,9 +29,9 @@ app.use(function (req, res, next) {
   next(createError(404));
 });
 
-//const MONGODB_URI = "mongodb://127.0.0.1/intograd";
-const MONGODB_URI =
-  "mongodb+srv://clintonwee:I4gotmypassword!@clinton.vyncd.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const MONGODB_URI = "mongodb://127.0.0.1/intograd";
+
+//Check to see if its a test. If its a test, no connection will be made to the actual mongoose server. The connection will be done via Mongodb Memory Server in testSuite.js
 
 if (process.env.NODE_ENV === "test") {
   console.log("This is just a test, use Mongo Memory Server");

@@ -10,7 +10,7 @@ chai.use(chaiHttp);
 module.exports = (testDescription, testsCallBack) => {
   describe(testDescription, () => {
     before(async () => {
-      //before stuff like setting up the app and mongoose server.
+      //set up the app and mongoose server.
       let mongoServer = await MongoMemoryServer.create();
       const mongoUri = mongoServer.getUri();
       await mongoose.connect(mongoUri, {
@@ -26,12 +26,12 @@ module.exports = (testDescription, testsCallBack) => {
     };
 
     beforeEach(async () => {
-      //beforeEach stuff clearing out the db.
+      //Clear db
       await clearDB();
     });
 
     after(async () => {
-      //after stuff like shutting down the app and mongoose server.
+      //Clear DB and disconnect from server
       await clearDB();
       await mongoose.disconnect();
     });
