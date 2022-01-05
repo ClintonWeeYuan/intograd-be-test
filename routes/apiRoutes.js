@@ -5,6 +5,7 @@ function handleSuccess(data, res) {
 
 function handleError(error, res, statusCode = 400) {
   res.setHeader("Content-Type", "application/json");
+
   res
     .status(statusCode)
     .end(JSON.stringify({ sucess: false, error: error.errors }));

@@ -127,7 +127,6 @@ mochaTestSuite("Match Making", () => {
       let mentee = new Mentee(sample_mentee);
       mentee.save();
 
-      console.log(mentee);
       chai
         .request(server)
         .post("/api/matchmake/match-all")

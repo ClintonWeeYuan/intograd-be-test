@@ -16,10 +16,11 @@ router.post("/dry-run", async function (req, res, next) {
     // find desired applicant by UUID
 
     //Clinton moved this line up from below console.log("FOUND APPLICANT BY ID:", applicant) as somehow the test will not run properly
-    let advisors = await findMentor({});
 
     applicant = await Mentee.findById(req.body.mentee_id).exec();
     console.log("FOUND APPLICANT BY ID:", applicant);
+
+    let advisors = await findMentor({});
 
     if (Array.isArray(advisors) && advisors.length > 0) {
       bestAdvisor = bestMatch(applicant, advisors); //note bestAdvisor = {advisor:{the advisor document returned}, score: bestScore returned}
@@ -59,6 +60,7 @@ router.post("/match-all", async function (req, res, next) {
   applicants.forEach(async function (applicant) {
     let availableAdvisors = await findMentor({ menteeCount: { $gt: 0 } });
     if (availableAdvisors.length == 0) {
+      console.log("Number of advisors available: " + availableAdvisors.length);
       handleError("No available advisors", res, 500);
     }
 
