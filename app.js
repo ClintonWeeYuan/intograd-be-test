@@ -8,6 +8,7 @@ var logger = require("morgan");
 var mentorRouter = require("./routes/mentor");
 var menteeRouter = require("./routes/mentee");
 var matchmakeRouter = require("./routes/match-making");
+var sendEmailRouter = require("./routes/sendEmail");
 var mongoose = require("mongoose"); // for mongodb
 var app = express();
 
@@ -24,6 +25,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/mentor", mentorRouter);
 app.use("/api/mentee", menteeRouter);
 app.use("/api/matchmake", matchmakeRouter);
+app.use("/api/sendEmail", sendEmailRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
