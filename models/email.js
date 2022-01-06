@@ -199,8 +199,8 @@ const Email = {
     switch (option) {
       case 1:
         email = {
-          from: "clintonweeyuan@gmail.com",
-          to: `${this.messageMentors.email}`,
+          from: "noreply@intograd.org",
+          to: `${this.messageMentors.email}, noreply@intograd.org`,
           subject: "Merry Christmas",
           html: `<h1><b>Congratulations on surviving another year!</b></h1><br />
                     <body><p>Merry Christmas and Happy New Year to you ${mentor.firstName}</p><br />
@@ -210,8 +210,8 @@ const Email = {
 
       case 2:
         email = {
-          from: "clintonweeyuan@gmail.com", // sender address
-          to: `${mentor.email}`, // list of receivers
+          from: "noreply@intograd.org", // sender address
+          to: `${mentor.email}, noreply@intograd.org`, // list of receivers
           subject: "Invitation to Event", // Subject line
           //text: "Hello world?", // plain text body
           html: `<h1><b>Are you ready for the time of your life?</b></h1><br />
@@ -222,8 +222,8 @@ const Email = {
 
       case 3:
         email = {
-          from: "clintonweeyuan@gmail.com",
-          to: `${mentor.email}`,
+          from: "noreply@intograd.org",
+          to: `${mentor.email}, noreply@intograd.org`,
           subject: "Happy New Year",
           html: `<h1><b>Please collect your angpao at the nearest train station in ${mentor.currentCountry}</b></h1><br />
           <body><p>Merry Christmas and Happy New Year to you ${mentor.firstName}</p><br />
@@ -233,8 +233,8 @@ const Email = {
 
       case 4:
         email = {
-          from: "clintonweeyuan@gmail.com",
-          to: `${mentor.email}`,
+          from: "noreply@intograd.org",
+          to: `${mentor.email}, noreply@intograd.org`,
           subject: "Sorry - You have been fired",
           html: `<h1><b>Please pack up your bags and leave.</b></h1><br />
           <body><p>However, do not fret! The world is full of opportunities for somehow with a ${mentor.postgradTypePrev} in ${mentor.postgradField.Prev}</p><br />
@@ -244,7 +244,7 @@ const Email = {
 
       default:
         email = {
-          from: "clintonweeyuan@gmail.com",
+          from: "noreply@intograd.org",
           to: `noreply@intograd.org`,
           subject: "DEFAULT CLAUSE EXECUTED",
           html: `<body><p>Please debug event-processor.js of REST API!</p></body>`,
