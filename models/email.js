@@ -1,4 +1,5 @@
 const Nodemailer = require("nodemailer");
+const menteeDetails = require("./mentee-details");
 
 const Email = {
   genEmail: function (option, applicant, advisor) {
@@ -194,6 +195,8 @@ const Email = {
     } finally {
     }
   },
+
+  //Generates emails for Mentors
   genMentorEmail: function (option, mentor) {
     let email = Object();
     switch (option) {
@@ -253,6 +256,8 @@ const Email = {
 
     return email;
   },
+
+  //Sends email to Mentors, using the genMentorEmail above
   messageMentors: async function (option, mentor) {
     try {
       let transporter = Nodemailer.createTransport({
@@ -271,6 +276,91 @@ const Email = {
       console.log("Email account verification: ", verifyResults);
 
       transporter.sendMail(this.genMentorEmail(option, mentor));
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
+  //Generates emails for mentees
+  genMenteeEmail: function (option, mentee) {
+    let email = Object();
+    switch (option) {
+      case 1:
+        email = {
+          from: "noreply@intograd.org",
+          to: `${mentee.email}, noreply@intograd.org`,
+          subject: "Merry Christmas",
+          html: `<h1><b>Congratulations on surviving another year!</b></h1><br />
+                    <body><p>Merry Christmas and Happy New Year to you ${mentee.firstName}</p><br />
+                    <p>Best wishes,<br />IntoGrad Team.</p></body>`,
+        };
+        break;
+
+      case 2:
+        email = {
+          from: "noreply@intograd.org", // sender address
+          to: `${mentee.email}, noreply@intograd.org`, // list of receivers
+          subject: "Invitation to Event", // Subject line
+          //text: "Hello world?", // plain text body
+          html: `<h1><b>Are you ready for the time of your life?</b></h1><br />
+          <body><p>Come join us for some ${mentee.engagements[0]} and ${mentee.engagements[1]} this coming Saturday!</p><br />
+          <p>Best wishes,<br />IntoGrad Team.</p></body>`,
+        };
+        break;
+
+      case 3:
+        email = {
+          from: "noreply@intograd.org",
+          to: `${mentee.email}, noreply@intograd.org`,
+          subject: "Happy New Year",
+          html: `<h1><b>Please collect your angpao at the nearest train station in ${menteeDetails.currentCountry}</b></h1><br />
+          <body><p>Merry Christmas and Happy New Year to you ${mentee.firstName}</p><br />
+          <p>Best wishes,<br />IntoGrad Team.</p></body>`,
+        };
+        break;
+
+      case 4:
+        email = {
+          from: "noreply@intograd.org",
+          to: `${mentee.email}, noreply@intograd.org`,
+          subject: "Sorry - You have been fired",
+          html: `<h1><b>Please pack up your bags and leave.</b></h1><br />
+          <body><p>However, do not fret! The world is full of opportunities for somehow with a ${mentee.postgradTypePrev} in ${mentee.postgradField.Prev}</p><br />
+          <p>Best wishes,<br />IntoGrad Team.</p></body>`,
+        };
+        break;
+
+      default:
+        email = {
+          from: "noreply@intograd.org",
+          to: `noreply@intograd.org`,
+          subject: "DEFAULT CLAUSE EXECUTED",
+          html: `<body><p>Please debug event-processor.js of REST API!</p></body>`,
+        };
+    } //end switch
+
+    return email;
+  },
+
+  //Sends email to Mentees, using genMenteeEmail above
+  messageMentees: async function (option, mentee) {
+    try {
+      let transporter = Nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true, // true for 465, false for other ports
+        auth: {
+          type: "OAuth2",
+          user: "noreply@intograd.org",
+          serviceClient: properties.secrets.client_id,
+          privateKey: properties.secrets.private_key,
+        },
+      });
+
+      let verifyResults = await transporter.verify();
+      console.log("Email account verification: ", verifyResults);
+
+      transporter.sendMail(this.genMenteeEmail(option, mentee));
     } catch (err) {
       console.log(err);
     }

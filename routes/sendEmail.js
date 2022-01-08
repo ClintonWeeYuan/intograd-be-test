@@ -5,20 +5,36 @@ var { Mentor, findMentor } = require("../models/mentor-details");
 var { handleSuccess, handleError } = require("./apiRoutes");
 
 router.post("/", async function (req, res, next) {
-  let query = null;
+  let { subject, option } = req.body;
 
-  let { option } = req.body;
-  console.log(option);
+  //Subject determines whether the email is being sent to mentor or mentee
+  //Option determines the template of the email that is being sent
 
-  let callback = function (err, mentors) {
-    if (err) return handleError(err, res);
-    mentors.forEach((mentor) => {
-      console.log(mentor.firstName);
-      Email.messageMentors(option, mentor);
-    });
-    res.send("Success");
-  };
-  findMentor(query, callback);
+  if (subject === "mentor") {
+    console.log(subject);
+    let query = { matchedApplicants: { $exists: true, $not: { $size: 0 } } };
+    // let query = { menteeCount: { $gt: 0 } };
+    let callback = function (err, mentors) {
+      if (err) return handleError(err, res);
+      mentors.forEach((mentor) => {
+        console.log(mentor.firstName);
+        Email.messageMentors(option, mentor);
+      });
+      res.send("Success");
+    };
+    findMentor(query, callback);
+  } else if (subject === "mentee") {
+    let query = { matchedAdvisor: { $exists: true, $not: { $size: 0 } } };
+    let callback = function (err, mentees) {
+      if (err) return handleError(err, res);
+      mentees.forEach((mentee) => {
+        console.log(mentee.firstName);
+        Email.messageMentees(option, mentee);
+      });
+      res.send("Success");
+    };
+    findMentee(query, callback);
+  }
 });
 
 module.exports = router;
