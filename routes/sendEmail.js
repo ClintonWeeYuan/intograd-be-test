@@ -10,19 +10,38 @@ router.post("/", async function (req, res, next) {
   //Subject determines whether the email is being sent to mentor or mentee
   //Option determines the template of the email that is being sent
 
-  if (subject === "mentor") {
-    console.log(subject);
+  if (subject === "mentor-individual") {
+    console.log("Send mentor separate emails about each mentee");
     let query = { matchedApplicants: { $exists: true, $not: { $size: 0 } } };
     // let query = { menteeCount: { $gt: 0 } };
     let callback = function (err, mentors) {
       if (err) return handleError(err, res);
       mentors.forEach((mentor) => {
         console.log(mentor.firstName);
-        Email.messageMentors(option, mentor);
+        mentor.matchedApplicants.forEach((mentee) => {
+          console.log(
+            `Email between ${mentor.firstName} ${mentor.lastName} and ${mentee}`
+          );
+          Email.messageMentors(option, mentor, mentee);
+        });
       });
       res.send("Success");
     };
     findMentor(query, callback);
+  } else if (subject === "mentor-bulk") {
+    if (subject === "mentor-individual") {
+      console.log("Send mentor ONE email");
+      let query = { matchedApplicants: { $exists: true, $not: { $size: 0 } } };
+      // let query = { menteeCount: { $gt: 0 } };
+      let callback = function (err, mentors) {
+        if (err) return handleError(err, res);
+        mentors.forEach((mentor) => {
+          Email.messageMentors(option, mentor);
+        });
+        res.send("Success");
+      };
+      findMentor(query, callback);
+    }
   } else if (subject === "mentee") {
     let query = { matchedAdvisor: { $exists: true, $not: { $size: 0 } } };
     let callback = function (err, mentees) {

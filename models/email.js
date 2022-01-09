@@ -258,7 +258,7 @@ const Email = {
   },
 
   //Sends email to Mentors, using the genMentorEmail above
-  messageMentors: async function (option, mentor) {
+  messageMentors: async function (option, mentor, mentee) {
     try {
       let transporter = Nodemailer.createTransport({
         host: "smtp.gmail.com",
@@ -275,7 +275,7 @@ const Email = {
       let verifyResults = await transporter.verify();
       console.log("Email account verification: ", verifyResults);
 
-      transporter.sendMail(this.genMentorEmail(option, mentor));
+      transporter.sendMail(this.genMentorEmail(option, mentor, mentee));
     } catch (err) {
       console.log(err);
     }
