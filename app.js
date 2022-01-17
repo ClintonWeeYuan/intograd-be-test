@@ -35,14 +35,12 @@ app.use(function (req, res, next) {
   next(createError(404));
 });
 
-const MONGODB_URI = "mongodb://127.0.0.1/intograd";
-
 //Check to see if its a test. If its a test, no connection will be made to the actual mongoose server. The connection will be done via Mongodb Memory Server in testSuite.js
 
 if (process.env.NODE_ENV === "test") {
   console.log("This is just a test, use Mongo Memory Server");
 } else {
-  mongoose.connect(process.env.MONGODB_URI || MONGODB_URI, {
+  mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     retryWrites: true,

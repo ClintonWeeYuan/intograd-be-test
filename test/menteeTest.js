@@ -17,8 +17,8 @@ mochaTestSuite("mentees", () => {
     lastName: "Chow",
     currentCountry: "CountryA",
     postgradUni: "PgUA",
-    postgradField: "PgfieldA", // broad field categories
-    postgradType: "PhD", // Masters/PhD
+    postgradField: "PgfieldA",
+    postgradType: "PhD",
     postgradProgramTitle: "PgProgA",
     undergradCountry: "UgCountryA",
     undergradField: "UgfieldA",
