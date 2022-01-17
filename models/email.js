@@ -161,7 +161,7 @@ const Email = {
         auth: {
           type: "OAuth2",
           user: "noreply@intograd.org",
-          serviceClient: properties.secrets.client_id,
+          serviceClient: process.env.EMAIL_PRIVATE_KEY,
           privateKey: properties.secrets.private_key,
         },
       });
@@ -252,8 +252,8 @@ const Email = {
         auth: {
           type: "OAuth2",
           user: "noreply@intograd.org",
-          serviceClient: properties.secrets.client_id,
-          privateKey: properties.secrets.private_key,
+          serviceClient: process.env.EMAIL_ID,
+          privateKey: process.env.EMAIL_PRIVATE_KEY,
         },
       });
 
@@ -322,8 +322,8 @@ const Email = {
         auth: {
           type: "OAuth2",
           user: "noreply@intograd.org",
-          serviceClient: properties.secrets.client_id,
-          privateKey: properties.secrets.private_key,
+          serviceClient: process.env.EMAIL_ID,
+          privateKey: process.env.EMAIL_PRIVATE_KEY,
         },
       });
 

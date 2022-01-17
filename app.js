@@ -4,6 +4,7 @@ var bodyParser = require("body-parser");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+require("dotenv").config();
 
 var mentorRouter = require("./routes/mentor");
 var menteeRouter = require("./routes/mentee");
@@ -40,7 +41,7 @@ app.use(function (req, res, next) {
 if (process.env.NODE_ENV === "test") {
   console.log("This is just a test, use Mongo Memory Server");
 } else {
-  mongoose.connect(process.env.MONGODB_URI, {
+  mongoose.connect(process.env.MONGDB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     retryWrites: true,
