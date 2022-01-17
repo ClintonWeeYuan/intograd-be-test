@@ -1,5 +1,4 @@
 const Nodemailer = require("nodemailer");
-const menteeDetails = require("./mentee-details");
 
 const Email = {
   genEmail: function (option, applicant, advisor) {
@@ -149,7 +148,6 @@ const Email = {
 
     return email;
   },
-
   emailNotify: async function (option, applicant, advisor) {
     try {
       // create reusable transporter object using the default SMTP transport
@@ -157,7 +155,6 @@ const Email = {
         host: "smtp.gmail.com",
         port: 465,
         secure: true, // true for 465, false for other ports
-        service: "gmail",
         auth: {
           type: "OAuth2",
           user: "noreply@intograd.org",
@@ -195,55 +192,7 @@ const Email = {
     } finally {
     }
   },
-
-  //Generates emails for Mentors
-  genMentorEmail: function (option, mentor) {
-    let email = Object();
-    switch (option) {
-      case 0:
-        email = {
-          from: "noreply@intograd.org",
-          to: `noreply@intograd.org`,
-          subject: `Please help us to help you, ${mentor.firstName}! (Mentor ${mentor.email})`,
-          html: `<body><p>Thank you, ${mentor.firstName}, for signing up and helping prospective applicants to gain equal access to postgraduate education!<br />
-                We hope you have had a production sesion and you have gained as much benefit from this mentorship as much as your mentee has!<br />
-                Before we conclude your current mentorship(s), please let us know your overall experience of the mentorship by filling up <a href='https://form.typeform.com/to/nCveETk2'>this quick form</a>.<br />
-                Alternatively, please copy and paste this link onto your browser: <b><u>https://form.typeform.com/to/nCveETk2</u></b><br />
-                If you have previously filled in the feedback form, thanks so much! Please forgive us for spamming and disregard this email.<br />
-                We really appreciate your kind effort and time to help us improve.</p>
-                <p>Best wishes,<br />IntoGrad Team.</p></body>`,
-        };
-        break;
-
-      case 1:
-        email = {
-          from: "noreply@intograd.org",
-          to: `${mentor.email}, noreply@intograd.org`,
-          subject: `Please help us to help you, ${mentor.firstName}!`,
-          html: `<body><p>Thank you, ${mentor.firstName}, for signing up and helping prospective applicants to gain equal access to postgraduate education!<br />
-                We hope you have had a production sesion and you have gained as much benefit from this mentorship as much as your mentee has!<br />
-                Before we conclude your current mentorship(s), please let us know your overall experience of the mentorship by filling up <a href='https://form.typeform.com/to/nCveETk2'>this quick form</a>.<br />
-                Alternatively, please copy and paste this link onto your browser: <b><u>https://form.typeform.com/to/nCveETk2</u></b><br />
-                If you have previously filled in the feedback form, thanks so much! Please forgive us for spamming and disregard this email.<br />
-                We really appreciate your kind effort and time to help us improve.</p>
-                <p>Best wishes,<br />IntoGrad Team.</p></body>`,
-        };
-        break;
-
-      default:
-        email = {
-          from: "noreply@intograd.org",
-          to: `noreply@intograd.org`,
-          subject: "DEFAULT CLAUSE EXECUTED",
-          html: `<body><p>Please debug event-processor.js of REST API!</p></body>`,
-        };
-    } //end switch
-
-    return email;
-  },
-
-  //Sends email to Mentors, using the genMentorEmail above
-  messageMentors: async function (option, mentor, mentee) {
+  messageMentors: async function (option, mentor) {
     try {
       let transporter = Nodemailer.createTransport({
         host: "smtp.gmail.com",
@@ -251,86 +200,28 @@ const Email = {
         secure: true, // true for 465, false for other ports
         auth: {
           type: "OAuth2",
-          user: "noreply@intograd.org",
-          serviceClient: properties.secrets.client_id,
-          privateKey: properties.secrets.private_key,
+          user: "clintonweeyuan@gmail.com",
+          clientId:
+            "1082127816005-pegebq2p9mnqn1k0jv6ep801nv4nktmv.apps.googleusercontent.com",
+          clientSecret: "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",
+          refreshToken:
+            "1//04PrP1vlKxW7yCgYIARAAGAQSNwF-L9IrJZgyV-HP0rTC7ToZGbAZwQ2IBqt1f93gZrfUZc5wP0FXQ5-apjY454Hcks2o8QACkV8",
+          acccessToken:
+            "ya29.a0ARrdaM-9CQ_hwoYIkNedVjYwyQMjxYKgA5WbYqAxNJDU0CR-81Z1Pz6S6Um1qoVoGXvSFDm-RxEtGnvqPmobMa09VXEcww_Mw1GTJtJ1xsWWFpeIXW14qesEJ-aPazAplI047UpJvCwO9SuwrTVq_9mykGvZ",
         },
       });
 
       let verifyResults = await transporter.verify();
       console.log("Email account verification: ", verifyResults);
 
-      transporter.sendMail(this.genMentorEmail(option, mentor, mentee));
-    } catch (err) {
-      console.log(err);
-    }
-  },
+      
 
-  //Generates emails for mentees
-  genMenteeEmail: function (option, mentee) {
-    let email = Object();
-    switch (option) {
-      case 0:
-        email = {
-          from: "noreply@intograd.org",
-          to: `noreply@intograd.org`,
-          subject: `Please help us to help you, ${mentee.firstName}! (Mentee ${mentee.email})`,
-          html: `<body><p>Thank you, ${mentee.firstName}, for reaching out to us to gain insights into postgraduate education!<br />
-                    We hope you have had a great mentorship so far, and you have benefitted from it.<br />
-                    Before we conclude your current mentorship, please let us know your overall experience of the mentorship by filling up <a href='https://form.typeform.com/to/udrN90KL'>this quick form</a>.<br />
-                    Alternatively, please copy and paste this link onto your browser: <b><u>https://form.typeform.com/to/udrN90KL</u></b><br />
-                    If you have previously filled in the feedback form, thanks so much! Please forgive us for spamming and disregard this email.<br />
-                    We really appreciate your kind effort and time to help us improve.</p>
-                    <p>Best wishes,<br />IntoGrad Team.</p></body>`,
-        };
-        break;
-
-      case 1:
-        email = {
-          from: "noreply@intograd.org",
-          to: `${mentee.email}, noreply@intograd.org`,
-          subject: `Please help us to help you, ${mentee.firstName}!`,
-          html: `<body><p>Thank you, ${mentee.firstName}, for reaching out to us to gain insights into postgraduate education!<br />
-                    We hope you have had a great mentorship so far, and you have benefitted from it.<br />
-                    Before we conclude your current mentorship, please let us know your overall experience of the mentorship by filling up <a href='https://form.typeform.com/to/udrN90KL'>this quick form</a>.<br />
-                    Alternatively, please copy and paste this link onto your browser: <b><u>https://form.typeform.com/to/udrN90KL</u></b><br />
-                    If you have previously filled in the feedback form, thanks so much! Please forgive us for spamming and disregard this email.<br />
-                    We really appreciate your kind effort and time to help us improve.</p>
-                    <p>Best wishes,<br />IntoGrad Team.</p></body>`,
-        };
-        break;
-
-      default:
-        email = {
-          from: "noreply@intograd.org",
-          to: `noreply@intograd.org`,
-          subject: "DEFAULT CLAUSE EXECUTED",
-          html: `<body><p>Please debug event-processor.js of REST API!</p></body>`,
-        };
-    } //end switch
-
-    return email;
-  },
-
-  //Sends email to Mentees, using genMenteeEmail above
-  messageMentees: async function (option, mentee) {
-    try {
-      let transporter = Nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true, // true for 465, false for other ports
-        auth: {
-          type: "OAuth2",
-          user: "noreply@intograd.org",
-          serviceClient: properties.secrets.client_id,
-          privateKey: properties.secrets.private_key,
-        },
+      transporter.sendMail({
+        from: "clintonweeyuan@gmail.com",
+        to: "clinton_wee@hotmail.com",
+        subject: "Testing Email",
+        text: "I hope this goes through",
       });
-
-      let verifyResults = await transporter.verify();
-      console.log("Email account verification: ", verifyResults);
-
-      transporter.sendMail(this.genMenteeEmail(option, mentee));
     } catch (err) {
       console.log(err);
     }
