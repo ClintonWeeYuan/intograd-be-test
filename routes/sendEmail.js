@@ -40,10 +40,11 @@ router.post("/", async function (req, res, next) {
         mentors.forEach((mentor) => {
           Email.messageMentors(option, mentor);
         });
+        return "Success sending Email to Mentors";
         // Email.messageMentors(option, mentors[5]);
-        res.send("Success Sending Email to Mentors");
       };
-      findMentor(query, callback);
+      const successMessage = await findMentor(query, callback);
+      res.send(successMessage);
     } catch (err) {
       console.log(err);
     }

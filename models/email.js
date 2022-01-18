@@ -261,9 +261,16 @@ const Email = {
       let verifyResults = await transporter.verify();
       console.log("Email account verification: ", verifyResults);
 
-      transporter.sendMail(this.genMentorEmail(option, mentor, mentee));
-      console.log(
-        `Successful email sent to ${mentor.firstName} ${mentor.lastName}.`
+      transporter.sendMail(
+        this.genMentorEmail(option, mentor, mentee),
+        (err, info) => {
+          if (err) console.log(err);
+          else {
+            console.log(
+              `Successful email sent to ${mentor.firstName} ${mentor.lastName}.`
+            );
+          }
+        }
       );
     } catch (err) {
       console.log(err);
