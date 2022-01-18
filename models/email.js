@@ -327,7 +327,7 @@ const Email = {
           type: "OAuth2",
           user: "noreply@intograd.org",
           serviceClient: process.env.EMAIL_ID,
-          privateKey: process.env.EMAIL_PRIVATE_KEY,
+          privateKey: JSON.parse(process.env.EMAIL_PRIVATE_KEY),
         },
       });
 

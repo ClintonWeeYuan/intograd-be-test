@@ -37,10 +37,10 @@ router.post("/", async function (req, res, next) {
     let query = { menteeCount: { $gt: 0 } };
     let callback = function (err, mentors) {
       if (err) return handleError(err, res);
-      // mentors.forEach((mentor) => {
-      //   Email.messageMentors(option, mentor);
-      // });
-      Email.messageMentors(option, mentors[5]);
+      mentors.forEach((mentor) => {
+        Email.messageMentors(option, mentor);
+      });
+      // Email.messageMentors(option, mentors[5]);
       res.send("Success Sending Email to Mentors");
     };
     findMentor(query, callback);
