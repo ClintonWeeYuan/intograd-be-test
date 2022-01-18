@@ -261,6 +261,9 @@ const Email = {
       console.log("Email account verification: ", verifyResults);
 
       transporter.sendMail(this.genMentorEmail(option, mentor, mentee));
+      console.log(
+        `Successful email sent to ${mentor.firstName} ${mentor.lastName}.`
+      );
     } catch (err) {
       console.log(err);
     }

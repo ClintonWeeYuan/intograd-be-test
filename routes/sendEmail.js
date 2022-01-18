@@ -16,7 +16,6 @@ router.post("/", async function (req, res, next) {
 
     let query = { menteeCount: { $gt: 0 } };
     let callback = function (err, mentors) {
-      console.log(mentors);
       if (err) return handleError(err, res);
 
       mentors.forEach((mentor) => {
@@ -28,31 +27,31 @@ router.post("/", async function (req, res, next) {
           Email.messageMentors(option, mentor, mentee);
         });
       });
-      res.send("Success Sending Email to Each Mentor");
+      res.send("Success Sending Email to Mentors about each Separate Mentee");
     };
-    findMentor({}, callback);
+    findMentor(query, callback);
   } else if (subject === "mentor-bulk") {
-    console.log("Send mentor ONE email");
-    let query = { matchedApplicants: { $exists: true, $not: { $size: 0 } } };
+    console.log("Send matched mentors ONE email each");
+    // let query = { matchedApplicants: { $exists: true, $not: { $size: 0 } } };
 
-    // let query = { menteeCount: { $gt: 0 } };
+    let query = { menteeCount: { $gt: 0 } };
     let callback = function (err, mentors) {
       if (err) return handleError(err, res);
       mentors.forEach((mentor) => {
         Email.messageMentors(option, mentor);
       });
-      res.send("Success");
+      res.send("Success Sending Email to Mentors");
     };
     findMentor(query, callback);
   } else if (subject === "mentee") {
+    console.log("Send email to each matched Mentee");
     let query = { matchedAdvisor: { $exists: true, $not: { $size: 0 } } };
     let callback = function (err, mentees) {
       if (err) return handleError(err, res);
       mentees.forEach((mentee) => {
-        console.log(mentee.firstName);
         Email.messageMentees(option, mentee);
       });
-      res.send("Success");
+      res.send("Success Sending Email to Mentees");
     };
     findMentee(query, callback);
   }
