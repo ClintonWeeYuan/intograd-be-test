@@ -29,7 +29,6 @@ router.post("/", async function (req, res, next) {
       });
       res.send("Success Sending Email to Mentors about each Separate Mentee");
     };
-    findMentor(query, callback);
   } else if (subject === "mentor-bulk") {
     console.log("Send matched mentors ONE email each");
     // let query = { matchedApplicants: { $exists: true, $not: { $size: 0 } } };
@@ -43,7 +42,12 @@ router.post("/", async function (req, res, next) {
       // Email.messageMentors(option, mentors[5]);
       res.send("Success Sending Email to Mentors");
     };
-    findMentor(query, callback);
+
+    try {
+      findMentor(query, callback);
+    } catch (err) {
+      console.log(err);
+    }
   } else if (subject === "mentee") {
     console.log("Send email to each matched Mentee");
     let query = { matchedAdvisor: { $exists: true, $not: { $size: 0 } } };
