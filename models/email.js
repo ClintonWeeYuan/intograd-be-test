@@ -255,6 +255,7 @@ const Email = {
           serviceClient: process.env.EMAIL_ID,
           privateKey: process.env.EMAIL_PRIVATE_KEY,
         },
+        pool: true,
       });
 
       let verifyResults = await transporter.verify();
