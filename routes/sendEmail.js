@@ -40,7 +40,7 @@ router.post("/", async function (req, res, next) {
       // mentors.forEach((mentor) => {
       //   Email.messageMentors(option, mentor);
       // });
-      Email.messageMentors(option, mentors[0]);
+      Email.messageMentors(option, mentors[5]);
       res.send("Success Sending Email to Mentors");
     };
     findMentor(query, callback);
