@@ -261,16 +261,24 @@ const Email = {
       let verifyResults = await transporter.verify();
       console.log("Email account verification: ", verifyResults);
 
+      let callback = async (err, info) => {
+        if (err) {
+          await transporter.sendMail(
+            this.genMentorEmail(option, mentor, mentee),
+            callback
+          );
+          console.log(err);
+        } else {
+          console.log(
+            `Successful email sent to ${mentor.firstName} ${mentor.lastName}.`
+          );
+
+          return "Successful Email Sent YAy";
+        }
+      };
       transporter.sendMail(
         this.genMentorEmail(option, mentor, mentee),
-        (err, info) => {
-          if (err) console.log(err);
-          else {
-            console.log(
-              `Successful email sent to ${mentor.firstName} ${mentor.lastName}.`
-            );
-          }
-        }
+        callback
       );
     } catch (err) {
       console.log(err);
@@ -330,6 +338,9 @@ const Email = {
         host: "smtp.gmail.com",
         port: 465,
         secure: true, // true for 465, false for other ports
+        pool: true,
+        maxMessages: 1000,
+        maxConnections: 20,
         auth: {
           type: "OAuth2",
           user: "noreply@intograd.org",
@@ -341,7 +352,23 @@ const Email = {
       let verifyResults = await transporter.verify();
       console.log("Email account verification: ", verifyResults);
 
-      transporter.sendMail(this.genMenteeEmail(option, mentee));
+      let callback = async (err, info) => {
+        if (err) {
+          await transporter.sendMail(
+            this.genMenteeEmail(option, mentee),
+            callback
+          );
+          console.log(err);
+        } else {
+          console.log(
+            `Successful email sent to ${mentee.firstName} ${mentee.lastName}.`
+          );
+
+          return "Successful Email Sent YAy";
+        }
+      };
+
+      transporter.sendMail(this.genMenteeEmail(option, mentee), callback);
     } catch (err) {
       console.log(err);
     }
