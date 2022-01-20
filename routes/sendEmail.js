@@ -4,6 +4,7 @@ var Email = require("../models/email");
 var { Mentor, findMentor } = require("../models/mentor-details");
 var { handleSuccess, handleError } = require("./apiRoutes");
 var { Mentee, findMentee } = require("../models/mentee-details");
+const { messageMentees } = require("../models/email");
 
 router.post("/", async function (req, res, next) {
   let { subject, option } = req.body;
@@ -34,20 +35,26 @@ router.post("/", async function (req, res, next) {
     res.send("Success Sending Email to Mentors about each Separate Mentee");
   } else if (subject === "mentor-bulk") {
     console.log("Send matched mentors ONE email each");
-    let query = { matchedApplicants: { $exists: true, $not: { $size: 0 } } };
-
+    // let query = { matchedApplicants: { $exists: true, $not: { $size: 0 } } };
+    let query = {
+      matchedApplicants: {
+        $exists: true,
+        $type: "array",
+        $ne: [],
+      },
+    };
     try {
       // let query = { menteeCount: { $gt: 0 } };
 
       let callback = async function (err, mentors) {
         if (err) return handleError(err, res);
-        console.log(mentors.length);
-        for (let index = 0; index < mentors.length; index++) {
-          await new Promise((resolve, reject) => setTimeout(resolve, 200));
-          await Email.messageMentors(option, mentors[index]);
-        }
+        console.log(`Number of mentors: ${mentors.length}`);
+        const message = await Email.messageMentors(option, mentors);
+        console.log(message);
+        return message;
       };
-      await findMentor(query, callback);
+      const message = await findMentor({}, callback);
+      res.end(message);
     } catch (err) {
       console.log(err);
     }
@@ -57,17 +64,14 @@ router.post("/", async function (req, res, next) {
     let callback = async function (err, mentees) {
       if (err) return handleError(err, res);
       console.log(`Number of mentees: ${mentees.length}`);
-      for (let index = 0; index < mentees.length; index++) {
-        await new Promise((resolve, reject) => setTimeout(resolve, 4000));
-        Email.messageMentees(option, mentees[index]);
-      }
-      res.send("Success Sending Email to Mentees");
+      const message = await Email.messageMentees(option, mentees);
+      res.send(message);
     };
     findMentee(query, callback);
   } else if (subject === "test") {
-    console.log("This is a test");
+    console.log("This is a test email API");
     try {
-      let query = { menteeCount: { $gt: 0 } };
+      let query = { firstName: "Kane" };
       let callback = async function (err, mentors) {
         if (err) return handleError(err, res);
         await new Promise((resolve, reject) => setTimeout(resolve, 10000));
@@ -77,7 +81,7 @@ router.post("/", async function (req, res, next) {
         // Email.messageMentors(option, mentors[5]);
       };
       const successMessage = await findMentor(query, callback);
-      res.send("Success");
+      res.send(successMessage);
     } catch (err) {
       console.log(err);
     }
