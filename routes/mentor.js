@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 var { Mentor, findMentor } = require("../models/mentor-details");
 var { handleSuccess, handleError } = require("./apiRoutes");
-const allAdvisors = require("../advisorList.json");
+// const allAdvisors = require("../advisorList.json");
 // Get mentors
 router.get("/", function (req, res, next) {
   let query = null;
