@@ -12,6 +12,7 @@ router.post("/", async function (req, res, next) {
   //Subject determines whether the email is being sent to mentor or mentee
   //Option determines the template of the email that is being sent
 
+  //Multiple emails to each mentor, depending on number of mentees he has
   if (subject === "mentor-individual") {
     console.log("Send mentor separate emails about each mentee");
     let query = { matchedApplicants: { $exists: true, $not: { $size: 0 } } };
@@ -33,41 +34,32 @@ router.post("/", async function (req, res, next) {
     };
     await findMentor(query, callback);
     res.send("Success Sending Email to Mentors about each Separate Mentee");
+
+    //One email for each Mentor
   } else if (subject === "mentor-bulk") {
     console.log("Send matched mentors ONE email each");
-    // let query = { matchedApplicants: { $exists: true, $not: { $size: 0 } } };
-    let query = {
-      matchedApplicants: {
-        $exists: true,
-        $type: "array",
-        $ne: [],
-      },
-    };
-    try {
-      // let query = { menteeCount: { $gt: 0 } };
+    let query = { matchedApplicants: { $exists: true, $not: { $size: 0 } } };
 
-      let callback = async function (err, mentors) {
-        if (err) return handleError(err, res);
-        console.log(`Number of mentors: ${mentors.length}`);
-        const message = await Email.messageMentors(option, mentors);
-        console.log(message);
-        return message;
-      };
-      const message = await findMentor({}, callback);
-      res.end(message);
+    try {
+      let mentors = await findMentor(query);
+      res.send(await Email.messageMentors(option, mentors));
     } catch (err) {
       console.log(err);
     }
+
+    //Email to each mentee
   } else if (subject === "mentee") {
     console.log("Send email to each matched Mentee");
     let query = { matchedAdvisor: { $exists: true, $not: { $size: 0 } } };
-    let callback = async function (err, mentees) {
-      if (err) return handleError(err, res);
-      console.log(`Number of mentees: ${mentees.length}`);
-      const message = await Email.messageMentees(option, mentees);
-      res.send(message);
-    };
-    findMentee(query, callback);
+
+    try {
+      let mentees = await findMentee(query);
+      res.send(await Email.messageMentees(option, mentees));
+    } catch (err) {
+      console.log(err);
+    }
+
+    //Test Email
   } else if (subject === "test") {
     console.log("This is a test email API");
     try {

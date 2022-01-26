@@ -220,14 +220,21 @@ const Email = {
           email = {
             from: "noreply@intograd.org",
             to: `noreply@intograd.org`,
-            subject: `Please help us to help you, ${mentor.firstName}! (Mentor ${mentor.email})`,
-            html: `<body><p>Thank you, ${mentor.firstName}, for signing up and helping prospective applicants to gain equal access to postgraduate education!<br />
-                We hope you have had a production sesion and you have gained as much benefit from this mentorship as much as your mentee has!<br />
-                Before we conclude your current mentorship(s), please let us know your overall experience of the mentorship by filling up <a href='https://form.typeform.com/to/nCveETk2'>this quick form</a>.<br />
-                Alternatively, please copy and paste this link onto your browser: <b><u>https://form.typeform.com/to/nCveETk2</u></b><br />
-                If you have previously filled in the feedback form, thanks so much! Please forgive us for spamming and disregard this email.<br />
-                We really appreciate your kind effort and time to help us improve.</p>
-                <p>Best wishes,<br />IntoGrad Team.</p></body>`,
+            subject: `IntoGrad Mentor - Mentorship feedback`,
+            html: `<body><p>Dear ${mentor.firstName}, <br/><br/>
+
+            Thank you for joining us as an IntoGrad Mentor and happy New Year from the IntoGrad team! <br /><br/>
+
+            We hope that you have had a fulfilling match with your mentee. Because of your generosity, together with the rest of the IntoGrad Mentor community, many of our applicants have made informed decisions to apply to postgraduate programmes of their choice.<br/><br/>
+
+            To improve your mentorship experience further, we would appreciate 4 minutes of your time to share your experience as a Mentor thus far in our <a href="https://form.typeform.com/to/nCveETk2">IntoGrad feedback form</a>. We take the responses from all our Mentors very seriously, so thank you for taking these moments to share your thoughts with us.<br/><br/>
+
+            Best wishes,<br/><br/>
+
+            IntoGrad Team.<br/><br/>
+
+            P.S. You can find us on <a href="https://www.facebook.com/Intograd">Facebook</a> and <a href="https://www.instagram.com/in2grad/">Instagram</a>, or visit our <a href="https://www.intograd.org/">website</a> for more updates in the meantime.
+             </p></body>`,
           };
           break;
 
@@ -235,14 +242,21 @@ const Email = {
           email = {
             from: "noreply@intograd.org",
             to: `${mentor.email}, noreply@intograd.org`,
-            subject: `Please help us to help you, ${mentor.firstName}!`,
-            html: `<body><p>Thank you, ${mentor.firstName}, for signing up and helping prospective applicants to gain equal access to postgraduate education!<br />
-                We hope you have had a production sesion and you have gained as much benefit from this mentorship as much as your mentee has!<br />
-                Before we conclude your current mentorship(s), please let us know your overall experience of the mentorship by filling up <a href='https://form.typeform.com/to/nCveETk2'>this quick form</a>.<br />
-                Alternatively, please copy and paste this link onto your browser: <b><u>https://form.typeform.com/to/nCveETk2</u></b><br />
-                If you have previously filled in the feedback form, thanks so much! Please forgive us for spamming and disregard this email.<br />
-                We really appreciate your kind effort and time to help us improve.</p>
-                <p>Best wishes,<br />IntoGrad Team.</p></body>`,
+            subject: `IntoGrad Mentor - Mentorship feedback`,
+            html: `<body><p>Dear ${mentor.firstName}, <br/><br/>
+
+            Thank you for joining us as an IntoGrad Mentor and happy New Year from the IntoGrad team! <br /><br/>
+
+            We hope that you have had a fulfilling match with your mentee. Because of your generosity, together with the rest of the IntoGrad Mentor community, many of our applicants have made informed decisions to apply to postgraduate programmes of their choice.<br/><br/>
+
+            To improve your mentorship experience further, we would appreciate 4 minutes of your time to share your experience as a Mentor thus far in our <a href="https://form.typeform.com/to/nCveETk2">IntoGrad feedback form</a>. We take the responses from all our Mentors very seriously, so thank you for taking these moments to share your thoughts with us.<br/><br/>
+
+            Best wishes,<br/><br/>
+
+            IntoGrad Team.<br/><br/>
+
+            P.S. You can find us on <a href="https://www.facebook.com/Intograd">Facebook</a> and <a href="https://www.instagram.com/in2grad/">Instagram</a>, or visit our <a href="https://www.intograd.org/">website</a> for more updates in the meantime.
+             </p></body>`,
           };
           break;
 
@@ -256,18 +270,31 @@ const Email = {
       }
       return email;
     };
-    try {
-      await async.each(mentors, async function (mentor) {
-        transporter.sendMail(getEmailTemplates(option, mentor), (err, info) => {
-          if (err) console.log(err);
-          else {
-            console.log(`Successful email sent to ${mentor.firstName}`);
-          }
-        });
-      });
-    } catch (err) {
-      console.log(err);
+
+    let successEmails = [];
+    let failedEmails = [];
+
+    async function sendMail(option, mentor) {
+      let info = await transporter.sendMail(getEmailTemplates(option, mentor));
+
+      if (info.accepted && info.accepted.length > 0) {
+        successEmails.push(mentor.firstName);
+      } else {
+        failedEmails.push(mentor.firstName);
+      }
+      console.log("Failed: " + failedEmails);
+      console.log("Success: " + successEmails);
+      return info;
     }
+
+    await Promise.all(mentors.map((mentor) => sendMail(option, mentor)));
+
+    let response = {
+      failedEmails: failedEmails,
+      successEmails: successEmails,
+    };
+
+    return response;
   },
 
   //Sends email to Mentees
@@ -333,20 +360,31 @@ const Email = {
 
       return email;
     };
-    try {
-      const message = await async.each(mentees, async function (mentee) {
-        transporter.sendMail(getEmailTemplates(option, mentee), (err, info) => {
-          if (err) console.log(err);
-          else {
-            console.log(`Successful email sent to ${mentee.firstName}`);
-          }
-        });
-      });
 
-      return "Successfully sent emails to mentees";
+    let successEmails = [];
+    let failedEmails = [];
+
+    async function sendMail(option, mentee) {
+      let info = await transporter.sendMail(getEmailTemplates(option, mentee));
+      if (info.accepted && info.accepted.length > 0) {
+        successEmails.push(mentee.firstName);
+      } else {
+        failedEmails.push(mentee.firstName);
+      }
+      console.log("Failed: " + failedEmails);
+      console.log("Success: " + successEmails);
+      return info;
+    }
+    try {
+      await Promise.all(mentees.map((mentee) => sendMail(option, mentee)));
     } catch (err) {
       console.log(err);
     }
+    let response = {
+      failedEmails: failedEmails,
+      successEmails: successEmails,
+    };
+    return response;
   },
 };
 

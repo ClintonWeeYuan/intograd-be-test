@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 var { Mentor, findMentor } = require("../models/mentor-details");
 var { handleSuccess, handleError } = require("./apiRoutes");
-
+const allAdvisors = require("../advisorList.json");
 // Get mentors
 router.get("/", function (req, res, next) {
   let query = null;
@@ -44,6 +44,15 @@ router.post("/create", function (req, res, next) {
     if (err) return handleError(err, res);
     handleSuccess(mentor, res);
   });
+});
+
+//Create All
+router.post("/createAll", function (req, res, next) {
+  let data = allAdvisors.Payload.data.advisor;
+
+  for (const i of data) {
+    Mentor.create(i, function (err, mentor) {});
+  }
 });
 
 router.delete("/:id", function (req, res) {
