@@ -46,14 +46,14 @@ router.post("/create", function (req, res, next) {
   });
 });
 
-//Create All
-router.post("/createAll", function (req, res, next) {
-  let data = allAdvisors.Payload.data.advisor;
+// //Create All
+// router.post("/createAll", function (req, res, next) {
+//   let data = allAdvisors.Payload.data.advisor;
 
-  for (const i of data) {
-    Mentor.create(i, function (err, mentor) {});
-  }
-});
+//   for (const i of data) {
+//     Mentor.create(i, function (err, mentor) {});
+//   }
+// });
 
 router.delete("/:id", function (req, res) {
   Mentor.findOneAndDelete(req.body, function (err, deleted) {
