@@ -197,8 +197,8 @@ const Email = {
     }
   },
 
-  //Sends email to Mentors above
-  messageMentors: async function (option, mentors, mentee) {
+  //Sends email to Mentors
+  messageMentors: async function (option, mentors, subject) {
     let transporter = Nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 465,
@@ -213,7 +213,7 @@ const Email = {
     });
 
     //Generates emails, depending on option chosen
-    const getEmailTemplates = (option, mentor) => {
+    const getEmailTemplates = (option, mentor, mentee) => {
       let email = Object();
       switch (option) {
         case 0:
@@ -260,6 +260,18 @@ const Email = {
           };
           break;
 
+        case 2:
+          email = {
+            from: "noreply@intograd.org",
+            to: `noreply@intograd.org`,
+            subject: `IntoGrad Mentor - Mentorship feedback`,
+            html: `<body><p>Dear ${mentor.firstName}, <br/><br/>
+
+
+               <p>${mentor.firstName}'s mentee is ${mentee.firstName}</p></body>`,
+          };
+          break;
+
         default:
           email = {
             from: "noreply@intograd.org",
@@ -274,8 +286,10 @@ const Email = {
     let successEmails = [];
     let failedEmails = [];
 
-    async function sendMail(option, mentor) {
-      let info = await transporter.sendMail(getEmailTemplates(option, mentor));
+    async function sendMail(option, mentor, mentee = {}) {
+      let info = await transporter.sendMail(
+        getEmailTemplates(option, mentor, mentee)
+      );
 
       if (info.accepted && info.accepted.length > 0) {
         successEmails.push(mentor.firstName);
@@ -287,7 +301,17 @@ const Email = {
       return info;
     }
 
-    await Promise.all(mentors.map((mentor) => sendMail(option, mentor)));
+    if (subject === "mentor-bulk") {
+      await Promise.all(mentors.map((mentor) => sendMail(option, mentor)));
+    } else if (subject === "mentor-individual") {
+      await Promise.all(
+        mentors.forEach((mentor) => {
+          mentor.matchedApplicants.map((mentee) =>
+            sendMail(option, mentor, mentee)
+          );
+        })
+      );
+    }
 
     let response = {
       failedEmails: failedEmails,

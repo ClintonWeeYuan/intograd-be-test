@@ -17,23 +17,12 @@ router.post("/", async function (req, res, next) {
     console.log("Send mentor separate emails about each mentee");
     let query = { matchedApplicants: { $exists: true, $not: { $size: 0 } } };
 
-    // let query = { menteeCount: { $gt: 0 } };
-    let callback = async function (err, mentors) {
-      if (err) return handleError(err, res);
-
-      for (let index = 0; index < mentors.length; index++) {
-        console.log(mentors[index].firstName);
-        for (let index = 0; index < mentor.matchedApplicants.length; index++) {
-          await new Promise((resolve, reject) => setTimeout(resolve, 4000));
-          console.log(
-            `Email between to ${mentor.firstName} ${mentor.lastName}`
-          );
-          await Email.messageMentors(option, mentor, mentee);
-        }
-      }
-    };
-    await findMentor(query, callback);
-    res.send("Success Sending Email to Mentors about each Separate Mentee");
+    try {
+      let mentors = await findMentor(query);
+      res.send(await Email.messageMentors(option, mentors, subject));
+    } catch (err) {
+      console.log(err);
+    }
 
     //One email for each Mentor
   } else if (subject === "mentor-bulk") {
@@ -42,7 +31,7 @@ router.post("/", async function (req, res, next) {
 
     try {
       let mentors = await findMentor(query);
-      res.send(await Email.messageMentors(option, mentors));
+      res.send(await Email.messageMentors(option, mentors, subject));
     } catch (err) {
       console.log(err);
     }
