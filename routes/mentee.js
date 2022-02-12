@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var { Mentee, findMentee } = require("../models/mentee-details");
 var { handleSuccess, handleError } = require("./apiRoutes");
+const { v4: uuidv4 } = require("uuid");
 // Get mentors
 router.get("/", function (req, res, next) {
   let query = null;
@@ -39,6 +40,7 @@ router.put("/:id", function (req, res, next) {
 
 /* create mentee. */
 router.post("/create", function (req, res, next) {
+  req.body.uuid = uuidv4();
   Mentee.create(req.body, function (err, mentee) {
     if (err) return handleError(err, res);
     handleSuccess(mentee, res);

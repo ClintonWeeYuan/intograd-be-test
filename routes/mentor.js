@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var { Mentor, findMentor } = require("../models/mentor-details");
 var { handleSuccess, handleError } = require("./apiRoutes");
+const { v4: uuidv4 } = require("uuid");
 // const allAdvisors = require("../advisorList.json");
 // Get mentors
 router.get("/", function (req, res, next) {
@@ -40,6 +41,8 @@ router.put("/:id", function (req, res, next) {
 
 /* create mentor. */
 router.post("/create", function (req, res, next) {
+  req.body.uuid = uuidv4();
+  console.log(req.body);
   Mentor.create(req.body, function (err, mentor) {
     if (err) return handleError(err, res);
     handleSuccess(mentor, res);

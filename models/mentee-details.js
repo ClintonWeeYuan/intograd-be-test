@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 // Schema
 const MenteeSchema = new mongoose.Schema({
-  uuid: String,
+  uuid: { type: String, required: true },
   firstName: String,
   lastName: String,
   currentCountry: String,

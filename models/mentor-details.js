@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 // Schema
 const MentorSchema = new mongoose.Schema({
-  uuid: String,
+  uuid: { type: String, required: true },
   firstName: {
     type: String,
     required: true,
